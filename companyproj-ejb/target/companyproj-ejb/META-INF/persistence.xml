@@ -23,6 +23,7 @@
    <persistence-unit name="companyprojPersistenceUnit">
       <class>org.aptech.entities.Company</class>
       <class>org.aptech.entities.Employee</class>
+      <class>org.aptech.entities.Course</class>
       <properties>
 
          <property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>

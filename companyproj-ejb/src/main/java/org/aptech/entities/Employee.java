@@ -10,7 +10,7 @@ import java.util.Set;
 public class Employee implements Serializable {
     @Id
     @Column(name = "EmployeeId", columnDefinition = "varchar(10)")
-    private  String employeeId;
+    private String employeeId;
 
     @Column(name = "EmployeeName")
     private String employeeName;
@@ -20,9 +20,20 @@ public class Employee implements Serializable {
     @JoinTable(
             name = "Employee_Company",
             joinColumns = @JoinColumn(name = "employee_id"),
-            inverseJoinColumns = @JoinColumn(name ="company_id")
+            inverseJoinColumns = @JoinColumn(name = "company_id")
     )
     private Set<Company> companies;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Course> courses;
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
 
     public Employee() {
     }

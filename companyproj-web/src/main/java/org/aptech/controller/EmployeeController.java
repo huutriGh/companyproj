@@ -1,6 +1,7 @@
 package org.aptech.controller;
 
 import org.aptech.entities.Company;
+import org.aptech.entities.Course;
 import org.aptech.entities.Employee;
 import org.aptech.services.EmployeeService;
 
@@ -20,40 +21,34 @@ public class EmployeeController extends HttpServlet {
     @EJB
     EmployeeService<Company> companyService;
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        employeeService.setType(Employee.class);
-        companyService.setType(Company.class);
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if(action.equalsIgnoreCase("ADD")){
+        String action = request.getParameter("action") == null ?
+                "ADD" : request.getParameter("action");
+        if (action.equalsIgnoreCase("ADD")) {
             request.getServletContext().getRequestDispatcher("/WEB-INF/Insert.jsp").forward(request, response);
-        }else if (action.equalsIgnoreCase("SEARCH")){
+        } else if (action.equalsIgnoreCase("SEARCH")) {
             request.getServletContext().getRequestDispatcher("/WEB-INF/Search.jsp").forward(request, response);
         }
 
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String action = request.getParameter("action");
-        if(action.equalsIgnoreCase("ADD")){
+        String action = request.getParameter("action") == null ?
+                "ADD" : request.getParameter("action");
+        if (action.equalsIgnoreCase("ADD")) {
             addEmployee(request, response);
-        }else if(action.equalsIgnoreCase("SEARCH")){
-            Employee employee = new Employee();
+        } else if (action.equalsIgnoreCase("SEARCH")) {
 
+            employeeService.setType(Employee.class);
             String employId = request.getParameter("empId");
-            employee = employeeService.getEntityById(employId);
+            Employee employee = employeeService.getEntityById(employId);
             request.setAttribute("employee", employee);
-            request.getServletContext().getRequestDispatcher("/WEB-INF/Result.jsp").forward(request,response);
+            request.getServletContext().getRequestDispatcher("/WEB-INF/Result.jsp").forward(request, response);
 
         }
-
 
 
     }
@@ -64,6 +59,7 @@ public class EmployeeController extends HttpServlet {
         String compId = request.getParameter("comId");
         String comIdNew = request.getParameter("comIdNew");
         String compName = request.getParameter("compName");
+        String courseId = request.getParameter("courseId");
 
         Company newCompany = new Company();
         newCompany.setCompanyId(comIdNew);
@@ -77,11 +73,20 @@ public class EmployeeController extends HttpServlet {
         Set<Company> companies = new HashSet<>();
         companies.add(company);
         companies.add(newCompany);
-
         Employee employee = new Employee();
+
+        Course course = new Course();
+        course.setCourseId(courseId);
+        course.setEmployee(employee);
+
+        Set<Course> courses = new HashSet<>();
+        courses.add(course);
+
         employee.setEmployeeId(empId);
         employee.setEmployeeName(empName);
         employee.setCompanies(companies);
+        employee.setCourses(courses);
+
 
         if (employeeService.addEntity(employee)) {
             response.getWriter().write("Insert employee Success");

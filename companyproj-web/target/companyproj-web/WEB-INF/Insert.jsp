@@ -34,9 +34,15 @@
             <input name="compName" type="text" placeholder="Company Name"/>
         </p>
     </fieldset>
+
+    <p>
+        <input name="courseId" type="text" placeholder="CourseId">
+    </p>
+
     <p>
         <input type="submit" value="ADD" name="action">
     </p>
+
 
 </form>
 </body>
