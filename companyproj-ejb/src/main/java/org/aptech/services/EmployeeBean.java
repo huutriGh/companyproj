@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 @Stateless(name = "EmployeeBeanEJB")
@@ -22,6 +23,7 @@ public class EmployeeBean<T extends Serializable> implements EmployeeService<T> 
     public EmployeeBean() {
         EntityManagerFactory managerFactory = Persistence.createEntityManagerFactory("companyprojPersistenceUnit");
         entityManager = managerFactory.createEntityManager();
+
     }
 
     @Override
@@ -35,7 +37,8 @@ public class EmployeeBean<T extends Serializable> implements EmployeeService<T> 
     }
 
     @Override
-    public T getEntityById(long id) {
+    public T getEntityById(String id) {
+
         return this.entityManager.find(type, id);
 
     }
@@ -71,7 +74,7 @@ public class EmployeeBean<T extends Serializable> implements EmployeeService<T> 
     }
 
     @Override
-    public boolean deleteEntity(long id) {
+    public boolean deleteEntity(String id) {
         try {
             entityManager.getTransaction().begin();
             entityManager.remove(getEntityById(id));
@@ -83,4 +86,16 @@ public class EmployeeBean<T extends Serializable> implements EmployeeService<T> 
             return false;
         }
     }
+
+
+    @Override
+    public void setType(Class<T> t) {
+        type = t;
+    }
+
+
+
+
+
+
 }

@@ -21,13 +21,44 @@ public class EmployeeController extends HttpServlet {
     EmployeeService<Company> companyService;
 
     @Override
+    public void init() throws ServletException {
+        super.init();
+        employeeService.setType(Employee.class);
+        companyService.setType(Company.class);
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getServletContext().getRequestDispatcher("/WEB-INF/Insert.jsp").forward(request, response);
+        String action = request.getParameter("action");
+        if(action.equalsIgnoreCase("ADD")){
+            request.getServletContext().getRequestDispatcher("/WEB-INF/Insert.jsp").forward(request, response);
+        }else if (action.equalsIgnoreCase("SEARCH")){
+            request.getServletContext().getRequestDispatcher("/WEB-INF/Search.jsp").forward(request, response);
+        }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        String action = request.getParameter("action");
+        if(action.equalsIgnoreCase("ADD")){
+            addEmployee(request, response);
+        }else if(action.equalsIgnoreCase("SEARCH")){
+            Employee employee = new Employee();
+
+            String employId = request.getParameter("empId");
+            employee = employeeService.getEntityById(employId);
+            request.setAttribute("employee", employee);
+            request.getServletContext().getRequestDispatcher("/WEB-INF/Result.jsp").forward(request,response);
+
+        }
+
+
+
+    }
+
+    private void addEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String empId = request.getParameter("empId");
         String empName = request.getParameter("empName");
         String compId = request.getParameter("comId");
@@ -57,6 +88,5 @@ public class EmployeeController extends HttpServlet {
         } else {
             response.getWriter().write("Insert employee Fail.");
         }
-
     }
 }

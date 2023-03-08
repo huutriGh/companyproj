@@ -13,10 +13,10 @@ public class Employee implements Serializable {
     private  String employeeId;
 
     @Column(name = "EmployeeName")
-    private String EmployeeName;
+    private String employeeName;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Employee_Company",
             joinColumns = @JoinColumn(name = "employee_id"),
@@ -36,11 +36,11 @@ public class Employee implements Serializable {
     }
 
     public String getEmployeeName() {
-        return EmployeeName;
+        return employeeName;
     }
 
     public void setEmployeeName(String employeeName) {
-        EmployeeName = employeeName;
+        this.employeeName = employeeName;
     }
 
 
